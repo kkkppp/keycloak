@@ -1,0 +1,67 @@
+plugins {
+    id 'java'
+}
+
+group = 'org.p2proto.keycloak'
+version = '1.0.0'
+
+repositories {
+    mavenCentral()
+}
+
+ext {
+    keycloakVersion = '24.0.2' // Replace with your Keycloak version
+}
+
+dependencies {
+    // Keycloak Server SPI
+    compileOnly "org.keycloak:keycloak-server-spi:${keycloakVersion}"
+    compileOnly "org.keycloak:keycloak-server-spi-private:${keycloakVersion}"
+    compileOnly "org.keycloak:keycloak-services:${keycloakVersion}"
+    compileOnly "org.keycloak:keycloak-model-infinispan:${keycloakVersion}"
+
+    // Database Connector (e.g., MySQL)
+    implementation 'org.postgresql:postgresql:42.6.0'
+
+    // HikariCP for connection pooling
+    implementation 'com.zaxxer:HikariCP:5.0.1'
+
+    // SLF4J API and Logback for logging
+    implementation 'org.slf4j:slf4j-api:2.0.9'
+    runtimeOnly 'ch.qos.logback:logback-classic:1.4.11'
+
+    // BCrypt for password hashing
+    implementation 'org.mindrot:jbcrypt:0.4'
+}
+
+task copyLibs(type: Copy) {
+    from configurations.runtimeClasspath
+    into layout.buildDirectory.dir("libs/external")
+}
+
+jar {
+    dependsOn copyLibs
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    manifest {
+        attributes(
+            'Implementation-Title': 'External DB User Storage Provider',
+            'Implementation-Version': version,
+            'Keycloak-Provider-Category': 'User Storage',
+            'Keycloak-Provider-Id': 'external-db-user-storage',
+            'Keycloak-Provider-Name': 'External Database User Storage Provider',
+            'Keycloak-Provider-Version': version,
+            'Keycloak-Provider-SPI-Classes': 'org.keycloak.storage.UserStorageProviderFactory'
+        )
+    }
+    task dockerBuildImage(type: Exec) {
+        commandLine 'docker', 'build', '-t', 'keycloak_p', '-f', 'docker/Dockerfile', '.'
+    }
+
+    task dockerComposeUp(type: Exec) {
+        commandLine 'docker', 'compose', '-f', 'docker/compose.yaml', 'up', '-d'
+    }
+
+    task dockerComposeDown(type: Exec) {
+        commandLine 'docker' ,'compose', '-f', 'docker/compose.yaml', 'down'
+    }
+}
