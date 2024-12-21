@@ -96,17 +96,16 @@ public class ExternalDatabaseUserStorageProvider implements
     @Override
     public UserModel getUserById(RealmModel realm, String id) {
         logger.info("getUserById, id = " + id);
+
+        String uuid = extractExternalUserId(id);
+        if (uuid == null) {
+            // If we failed to extract a valid UUID, just return null
+            return null;
+        }
+
         try (Connection connection = getConnection()) {
             String sql = "SELECT id, username, email, first_name, last_name FROM users WHERE id = ?::uuid";
             try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-                String[] tmp = id.split(":");
-                String uuid;
-                if (tmp.length != 3) {
-                    logger.error("Invalid user id: " + id);
-                    uuid = id;
-                } else {
-                    uuid = tmp[2];
-                }
                 stmt.setString(1, uuid);
                 try (ResultSet rs = stmt.executeQuery()) {
                     if (rs.next()) {
@@ -117,7 +116,37 @@ public class ExternalDatabaseUserStorageProvider implements
         } catch (SQLException e) {
             logger.error("Error fetching user by ID: {}", id, e);
         }
+
         return null;
+    }
+
+    /**
+     * Extract the external user UUID from a Keycloak user ID.
+     * The expected format is "f:<componentId>:<externalId>".
+     * If the format doesn't match or the component doesn't match this provider, return null.
+     */
+    private String extractExternalUserId(String keycloakUserId) {
+        if (keycloakUserId == null) {
+            logger.warn("User ID is null");
+            return null;
+        }
+
+        String[] parts = keycloakUserId.split(":");
+        if (parts.length != 3 || !"f".equals(parts[0])) {
+            logger.warn("Invalid user ID format: " + keycloakUserId);
+            return null;
+        }
+
+        String componentId = parts[1];
+        String externalId = parts[2];
+
+        // Verify that this user ID belongs to this provider
+        if (!model.getId().equals(componentId)) {
+            logger.warn("User ID " + keycloakUserId + " does not match this provider's component ID " + model.getId());
+            return null;
+        }
+
+        return externalId;
     }
 
     @Override
