@@ -15,10 +15,17 @@ ext {
 
 dependencies {
     // Keycloak Server SPI
+    compileOnly "org.keycloak:keycloak-core:${keycloakVersion}"
     compileOnly "org.keycloak:keycloak-server-spi:${keycloakVersion}"
     compileOnly "org.keycloak:keycloak-server-spi-private:${keycloakVersion}"
     compileOnly "org.keycloak:keycloak-services:${keycloakVersion}"
     compileOnly "org.keycloak:keycloak-model-infinispan:${keycloakVersion}"
+
+    // For test code that references Keycloak classes
+    testImplementation "org.keycloak:keycloak-core:${keycloakVersion}"
+    testImplementation "org.keycloak:keycloak-server-spi:${keycloakVersion}"
+    testImplementation "org.keycloak:keycloak-server-spi-private:${keycloakVersion}"
+    testImplementation "org.keycloak:keycloak-services:${keycloakVersion}"
 
     // Database Connector (e.g., MySQL)
     implementation 'org.postgresql:postgresql:42.6.0'
@@ -32,6 +39,21 @@ dependencies {
 
     // BCrypt for password hashing
     implementation 'org.mindrot:jbcrypt:0.4'
+
+    // JUnit 5 API (for writing tests)
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.10.0'
+
+    // JUnit 5 Engine (so tests can be discovered and run)
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.10.0'
+
+    // Mockito for mocking dependencies (connections, Keycloak classes, etc.)
+    testImplementation 'org.mockito:mockito-core:5.5.0'
+
+    // If you need the inline mock maker (for final classes), you can add:
+    //testImplementation 'org.mockito:mockito-inline:5.5.0'
+
+    // If you also need the JUnit Jupiter integration with Mockito:
+    testImplementation 'org.mockito:mockito-junit-jupiter:5.5.0'
 }
 
 task copyLibs(type: Copy) {
@@ -63,5 +85,15 @@ jar {
 
     task dockerComposeDown(type: Exec) {
         commandLine 'docker' ,'compose', '-f', 'docker/compose.yaml', 'down'
+    }
+
+    test {
+        // Enable JUnit 5 support
+        useJUnitPlatform()
+
+        // (Optional) Show a more detailed test output
+        testLogging {
+            events "PASSED", "FAILED", "SKIPPED"
+        }
     }
 }
