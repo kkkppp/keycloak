@@ -8,9 +8,9 @@ import org.keycloak.component.ComponentModel;
 import org.keycloak.credential.CredentialInput;
 import org.keycloak.models.KeycloakSession;
 import org.keycloak.models.RealmModel;
+import org.keycloak.models.UserCredentialModel;
 import org.keycloak.models.UserModel;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.sql.Connection;
@@ -50,7 +50,6 @@ class ExternalDatabaseUserStorageProviderTest {
 
     @BeforeEach
     void setUp() {
-        MockitoAnnotations.openMocks(this);
         provider = new ExternalDatabaseUserStorageProvider(session, model, dataSource);
     }
 
@@ -101,7 +100,6 @@ class ExternalDatabaseUserStorageProviderTest {
     @Test
     void testGetUserById_invalidFormat() {
         // The ID doesn't match the expected "f:<componentId>:<uuid>" format
-        when(model.getId()).thenReturn("someComponentId");
         String keycloakUserId = "invalidFormat";
 
         UserModel userModel = provider.getUserById(realm, keycloakUserId);
@@ -171,7 +169,7 @@ class ExternalDatabaseUserStorageProviderTest {
         UserModel userModel = mock(UserModel.class);
         when(userModel.getUsername()).thenReturn(testUsername);
 
-        CredentialInput credentialInput = mock(CredentialInput.class);
+        CredentialInput credentialInput = mock(UserCredentialModel.class);
         when(credentialInput.getType()).thenReturn("password");
         when(credentialInput.getChallengeResponse()).thenReturn(testPassword);
 
@@ -200,7 +198,7 @@ class ExternalDatabaseUserStorageProviderTest {
         UserModel userModel = mock(UserModel.class);
         when(userModel.getUsername()).thenReturn(testUsername);
 
-        CredentialInput credentialInput = mock(CredentialInput.class);
+        CredentialInput credentialInput = mock(UserCredentialModel.class);
         when(credentialInput.getType()).thenReturn("password");
         when(credentialInput.getChallengeResponse()).thenReturn(wrongPassword);
 
@@ -223,7 +221,7 @@ class ExternalDatabaseUserStorageProviderTest {
         UserModel userModel = mock(UserModel.class);
         when(userModel.getUsername()).thenReturn(testUsername);
 
-        CredentialInput credentialInput = mock(CredentialInput.class);
+        CredentialInput credentialInput = mock(UserCredentialModel.class);
         when(credentialInput.getType()).thenReturn("password");
         when(credentialInput.getChallengeResponse()).thenReturn(testPassword);
 
