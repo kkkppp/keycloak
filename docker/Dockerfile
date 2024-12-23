@@ -14,6 +14,9 @@ WORKDIR /opt/keycloak
 COPY build/libs/keycloak-1.0.0.jar /opt/keycloak/providers/
 COPY build/libs/external/*.jar /opt/keycloak/providers/
 
+# Copy realm settings for import
+COPY src/main/resources/json/realm-export.json /opt/keycloak/data/import
+
 # Optional: If you have additional configuration files, copy them
 # COPY keycloak.conf /opt/keycloak/conf/keycloak.conf
 
@@ -28,4 +31,4 @@ EXPOSE 5005
 ENTRYPOINT ["/opt/keycloak/bin/kc.sh"]
 
 # Define the command to run Keycloak
-CMD ["start-dev", "--verbose"]
+CMD ["start-dev", "--verbose", "--import-realm"]
