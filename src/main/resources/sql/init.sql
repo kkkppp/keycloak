@@ -50,5 +50,7 @@ CREATE INDEX idx_user_attributes_value ON user_attributes(value);
 GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE users TO keycloak;
 GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE user_attributes TO keycloak;
 
+GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO platform;
+
 insert into users(username, email, first_name, last_name, password_hash) values ('admin', 'kirill.paliy@gmail.com','Kir','P','$2a$10$F.RKkkj5BaSipxxpAQnx2.dogjoEsBNvgSLAwvcgkvQcUYThxke52');
 insert into users(username, email, first_name, last_name, password_hash) values ('system','system@example.com','Service','Account','$2a$10$GScPuSmLxLwwdOCmar1abOCXr9xSogz/1/ABBKRXy8YMAnS6cUqr2');
