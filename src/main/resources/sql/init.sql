@@ -1,3 +1,5 @@
+drop database platform;
+
 create database platform;
 
 create user keycloak with password 'qwerty';

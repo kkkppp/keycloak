@@ -15,7 +15,7 @@ COPY build/libs/keycloak-1.0.0.jar /opt/keycloak/providers/
 COPY build/libs/external/*.jar /opt/keycloak/providers/
 
 # Copy realm settings for import
-COPY src/main/resources/json/realm-export.json /opt/keycloak/data/import
+COPY src/main/resources/json/realm-export.json /opt/keycloak/data/import/realm-export.json
 
 # Optional: If you have additional configuration files, copy them
 # COPY keycloak.conf /opt/keycloak/conf/keycloak.conf

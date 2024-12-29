@@ -96,6 +96,7 @@ public class ExternalDatabaseUserStorageProvider implements
     @Override
     public UserModel getUserById(RealmModel realm, String id) {
         logger.info("getUserById, id = " + id);
+        //new Exception().printStackTrace();
 
         String uuid = extractExternalUserId(id);
         if (uuid == null) {
@@ -152,7 +153,7 @@ public class ExternalDatabaseUserStorageProvider implements
     @Override
     public UserModel getUserByUsername(RealmModel realm, String username) {
         logger.info("getUserByName, name = " + username);
-        new Exception().printStackTrace();
+        //new Exception().printStackTrace();
         try (Connection connection = getConnection()) {
             String sql = "SELECT id, username, email, first_name, last_name FROM users WHERE username = ?";
             try (PreparedStatement stmt = connection.prepareStatement(sql)) {

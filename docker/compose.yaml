@@ -16,4 +16,8 @@ services:
       - "host.docker.internal:host-gateway"  # Necessary on Linux
     command:
       - start-dev
+      - --verbose
       - --hostname-url=http://localhost:8081
+      - --import-realm
+      - --file=/opt/keycloak/data/import/realm-export.json
+      - --spi-import-export-strategy=IGNORE_EXISTING
