@@ -25,7 +25,7 @@ RUN /opt/keycloak/bin/kc.sh build --verbose
 
 # Expose the Keycloak port
 EXPOSE 8080
-EXPOSE 5005
+#EXPOSE 5005
 
 # Set the entrypoint
 ENTRYPOINT ["/opt/keycloak/bin/kc.sh"]
