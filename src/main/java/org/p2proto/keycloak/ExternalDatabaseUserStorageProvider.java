@@ -61,7 +61,7 @@ public class ExternalDatabaseUserStorageProvider implements
         String password = credentialInput.getChallengeResponse();
 
         try (Connection connection = getConnection()) {
-            String sql = "SELECT password_hash FROM users WHERE username = ?";
+            String sql = "SELECT password_hash FROM platform.users WHERE username = ?";
             try (PreparedStatement stmt = connection.prepareStatement(sql)) {
                 stmt.setString(1, username);
                 try (ResultSet rs = stmt.executeQuery()) {
@@ -105,7 +105,7 @@ public class ExternalDatabaseUserStorageProvider implements
         }
 
         try (Connection connection = getConnection()) {
-            String sql = "SELECT id, username, email, first_name, last_name FROM users WHERE id = ?::uuid";
+            String sql = "SELECT id, username, email, first_name, last_name FROM platform.users WHERE id = ?::uuid";
             try (PreparedStatement stmt = connection.prepareStatement(sql)) {
                 stmt.setString(1, uuid);
                 try (ResultSet rs = stmt.executeQuery()) {
@@ -155,7 +155,7 @@ public class ExternalDatabaseUserStorageProvider implements
         logger.info("getUserByName, name = " + username);
         //new Exception().printStackTrace();
         try (Connection connection = getConnection()) {
-            String sql = "SELECT id, username, email, first_name, last_name FROM users WHERE username = ?";
+            String sql = "SELECT id, username, email, first_name, last_name FROM platform.users WHERE username = ?";
             try (PreparedStatement stmt = connection.prepareStatement(sql)) {
                 stmt.setString(1, username);
                 try (ResultSet rs = stmt.executeQuery()) {
@@ -174,7 +174,7 @@ public class ExternalDatabaseUserStorageProvider implements
     public UserModel getUserByEmail(RealmModel realm, String email) {
         logger.info("getUserByEmail, email = " + email);
         try (Connection connection = getConnection()) {
-            String sql = "SELECT id, username, email, first_name, last_name FROM users WHERE email = ?";
+            String sql = "SELECT id, username, email, first_name, last_name FROM platform.users WHERE email = ?";
             try (PreparedStatement stmt = connection.prepareStatement(sql)) {
                 stmt.setString(1, email);
                 try (ResultSet rs = stmt.executeQuery()) {
