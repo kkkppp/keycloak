@@ -16,7 +16,18 @@ COPY build/libs/external/*.jar /opt/keycloak/providers/
 
 # Copy realm settings for import
 COPY src/main/resources/json/realm-export.json /opt/keycloak/data/import/realm-export.json
+USER root
+RUN chmod 777 /opt/keycloak/data/import
+USER keycloak
 
+# Create scripts directory
+RUN mkdir -p /opt/keycloak/scripts
+
+# Copy the script into the container
+COPY docker/replace-host.sh /opt/keycloak/scripts/replace-host.sh
+
+# Make the script executable
+#RUN chmod 755 /opt/keycloak/scripts/replace-host.sh
 # Optional: If you have additional configuration files, copy them
 # COPY keycloak.conf /opt/keycloak/conf/keycloak.conf
 
@@ -28,7 +39,7 @@ EXPOSE 8080
 #EXPOSE 5005
 
 # Set the entrypoint
-ENTRYPOINT ["/opt/keycloak/bin/kc.sh"]
+ENTRYPOINT ["/bin/sh", "-c", "/opt/keycloak/scripts/replace-host.sh && /opt/keycloak/bin/kc.sh start-dev --import-realm"]
 
 # Define the command to run Keycloak
-CMD ["start-dev", "--verbose", "--import-realm"]
+#CMD ["start-dev", "--verbose", "--import-realm"]

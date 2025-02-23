@@ -670,7 +670,7 @@
       "clientAuthenticatorType": "client-secret",
       "secret": "aarnV3ngWtnpYKv1EQ4IIx2ITijAiRpc",
       "redirectUris": [
-        "http://localhost:8080/p2proto/login/oauth2/code/keycloak",
+        "http://localhost/p2proto/login/oauth2/code/keycloak",
         "/*"
       ],
       "webOrigins": [
