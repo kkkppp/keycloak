@@ -105,7 +105,7 @@ public class ExternalDatabaseUserStorageProvider implements
         }
 
         try (Connection connection = getConnection()) {
-            String sql = "SELECT id, username, email, first_name, last_name FROM platform.users WHERE id = ?::uuid";
+            String sql = "SELECT uuid, username, email, first_name, last_name FROM platform.users WHERE uuid = ?::uuid";
             try (PreparedStatement stmt = connection.prepareStatement(sql)) {
                 stmt.setString(1, uuid);
                 try (ResultSet rs = stmt.executeQuery()) {
@@ -155,7 +155,7 @@ public class ExternalDatabaseUserStorageProvider implements
         logger.info("getUserByName, name = " + username);
         //new Exception().printStackTrace();
         try (Connection connection = getConnection()) {
-            String sql = "SELECT id, username, email, first_name, last_name FROM platform.users WHERE username = ?";
+            String sql = "SELECT uuid, username, email, first_name, last_name FROM platform.users WHERE username = ?";
             try (PreparedStatement stmt = connection.prepareStatement(sql)) {
                 stmt.setString(1, username);
                 try (ResultSet rs = stmt.executeQuery()) {
@@ -174,7 +174,7 @@ public class ExternalDatabaseUserStorageProvider implements
     public UserModel getUserByEmail(RealmModel realm, String email) {
         logger.info("getUserByEmail, email = " + email);
         try (Connection connection = getConnection()) {
-            String sql = "SELECT id, username, email, first_name, last_name FROM platform.users WHERE email = ?";
+            String sql = "SELECT uuid, username, email, first_name, last_name FROM platform.users WHERE email = ?";
             try (PreparedStatement stmt = connection.prepareStatement(sql)) {
                 stmt.setString(1, email);
                 try (ResultSet rs = stmt.executeQuery()) {
@@ -190,7 +190,7 @@ public class ExternalDatabaseUserStorageProvider implements
     }
 
     private UserModel mapUser(ResultSet rs, RealmModel realm) throws SQLException {
-        String id = rs.getString("id");
+        String uuid = rs.getString("uuid");
         String username = rs.getString("username");
         String email = rs.getString("email");
         String firstName = rs.getString("first_name");
@@ -239,7 +239,7 @@ public class ExternalDatabaseUserStorageProvider implements
 
             @Override
             public String getId() {
-                return "f:"+model.getId()+":"+id;
+                return "f:"+model.getId()+":"+uuid;
             }
         };
     }
@@ -249,7 +249,7 @@ public class ExternalDatabaseUserStorageProvider implements
         logger.info("searchForUserStream, params = " + params);
         List<UserModel> users = new ArrayList<>();
 
-        StringBuilder sqlBuilder = new StringBuilder("SELECT id, username, email, first_name, last_name FROM users WHERE 1=1");
+        StringBuilder sqlBuilder = new StringBuilder("SELECT uuid, username, email, first_name, last_name FROM users WHERE 1=1");
         List<Object> parameters = new ArrayList<>();
 
         boolean exact = Boolean.parseBoolean(params.getOrDefault(UserModel.EXACT, "false"));

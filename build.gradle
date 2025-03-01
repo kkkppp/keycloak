@@ -76,10 +76,12 @@ jar {
         )
     }
     task dockerBuildImage(type: Exec) {
+        dependsOn jar
         commandLine 'docker', 'build', '-t', 'keycloak_p', '-f', 'docker/Dockerfile', '.'
     }
 
     task dockerComposeUp(type: Exec) {
+        dependsOn dockerBuildImage
         commandLine 'docker', 'compose', '-f', 'docker/compose.yaml', 'up', '-d'
     }
 
