@@ -24,7 +24,7 @@ USER keycloak
 RUN mkdir -p /opt/keycloak/scripts
 
 # Copy the script into the container
-COPY docker/replace-host.sh /opt/keycloak/scripts/replace-host.sh
+COPY --chmod=755 docker/replace-host.sh /opt/keycloak/scripts/replace-host.sh
 
 # Make the script executable
 #RUN chmod 755 /opt/keycloak/scripts/replace-host.sh
